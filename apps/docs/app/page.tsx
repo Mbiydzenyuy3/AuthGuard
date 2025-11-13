@@ -1,8 +1,11 @@
-import Image, { type ImageProps } from "next/image";
-import { Button } from "@repo/ui/button";
-import styles from "./page.module.css";
+'use client';
 
-type Props = Omit<ImageProps, "src"> & {
+import Image, { type ImageProps } from 'next/image';
+import { Button } from '@devguard/ui';
+import styles from './page.module.css';
+import React from 'react';
+
+type Props = Omit<ImageProps, 'src'> & {
   srcLight: string;
   srcDark: string;
 };

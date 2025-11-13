@@ -1,0 +1,14 @@
+version: 1
+enable_reviews: true
+add_review_summary: true
+review_draft_prs: false
+language: "en"
+ignored_paths:
+  - "dist/**"
+  - "node_modules/**"
+  - "package-lock.json"
+review_guidelines:
+  - "Focus on potential bugs, security vulnerabilities, and performance bottlenecks."
+  - "Ensure all new public functions in the SDK are documented with JSDoc."
+  - "Check for consistency with our NestJS and React best practices."
+  - "Ensure environment variables are not hard-coded."

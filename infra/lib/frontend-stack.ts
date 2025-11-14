@@ -4,6 +4,7 @@ import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import { Construct } from 'constructs';
+import { S3StaticWebsiteOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
 
 interface FrontendStackProps extends cdk.StackProps {
   apiUrl: string;
@@ -22,15 +23,25 @@ export class FrontendStack extends cdk.Stack {
 
     const distribution = new cloudfront.Distribution(this, 'WebDistribution', {
       defaultBehavior: {
-        origin: new origins.S3StaticWebsiteOrigin(siteBucket),
+        origin: new S3StaticWebsiteOrigin(siteBucket),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       },
     });
 
     new s3deploy.BucketDeployment(this, 'DeployWebsite', {
-      sources: [s3deploy.Source.asset('../apps/web/out')],
+      sources: [
+        s3deploy.Source.asset('../apps/web/out', {
+          exclude: [
+            '**/*.map',
+            '**/node_modules/**',
+            '**/.next/**',
+            '**/dist/**',
+          ],
+        }),
+      ],
       destinationBucket: siteBucket,
       distribution,
+      prune: true,
       distributionPaths: ['/*'],
     });
 

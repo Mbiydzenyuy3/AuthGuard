@@ -3,6 +3,7 @@ import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
 import { Construct } from 'constructs';
+import * as path from 'path';
 
 export class BackendStack extends cdk.Stack {
   public readonly apiUrl: cdk.CfnOutput;
@@ -24,9 +25,9 @@ export class BackendStack extends cdk.Stack {
         desiredCount: 1,
         publicLoadBalancer: true,
         taskImageOptions: {
-          image: ecs.ContainerImage.fromAsset('../', {
-            file: 'apps/api/Dockerfile',
-          }),
+          image: ecs.ContainerImage.fromAsset(
+            path.join(__dirname, '../../apps/api'),
+          ),
           containerPort: 3000,
           environment: { NODE_ENV: 'production' },
         },

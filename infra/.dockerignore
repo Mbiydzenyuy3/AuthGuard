@@ -1,3 +1,13 @@
 node_modules
+**/node_modules
 cdk.out
-*.ts
+**/cdk.out
+.git
+.gitignore
+*.log
+infra/docker-context
+**/.next
+**/dist
+**/coverage
+pnpm-lock.yaml
+pnpm-workspace.yaml

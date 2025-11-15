@@ -12,18 +12,16 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
-    "@devguard/ui": "workspace:*",
     "@devguard/sdk-js": "workspace:*",
+    "@devguard/ui": "workspace:*",
     "next": "^16.0.0",
     "react": "^19.2.0",
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "@devguard/ui": "workspace:*",
     "@devguard/sdk-js": "workspace:*",
+    "@devguard/ui": "workspace:*",
     "@types/node": "^22.15.3",
-    "@types/react": "19.1.0",
-    "@types/react-dom": "19.1.1",
     "eslint": "^9.38.0",
     "jest": "^30.2.0",
     "typescript": "^5.9.3"

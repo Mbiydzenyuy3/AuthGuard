@@ -1,0 +1,6 @@
+node_modules
+dist
+build
+.next
+infra/cdk.out
+*.cjs

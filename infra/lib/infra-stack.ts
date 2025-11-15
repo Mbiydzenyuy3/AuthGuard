@@ -15,6 +15,8 @@ export class BackendStack extends cdk.Stack {
 
     const cluster = new ecs.Cluster(this, 'ApiCluster', { vpc });
 
+    const apiAssetPath = path.join(__dirname, '..', '..', 'apps', 'api');
+
     const service = new ecsPatterns.ApplicationLoadBalancedFargateService(
       this,
       'ApiService',
@@ -25,14 +27,19 @@ export class BackendStack extends cdk.Stack {
         desiredCount: 1,
         publicLoadBalancer: true,
         taskImageOptions: {
-          image: ecs.ContainerImage.fromAsset(
-            path.join(__dirname, '../docker-context/apps/api'),
-          ),
+          image: ecs.ContainerImage.fromAsset(apiAssetPath),
           containerPort: 3000,
-          environment: { NODE_ENV: 'production' },
+          environment: {
+            NODE_ENV: 'production',
+          },
         },
       },
     );
+
+    service.targetGroup.configureHealthCheck({
+      path: '/health',
+      interval: cdk.Duration.seconds(30),
+    });
 
     this.apiUrl = new cdk.CfnOutput(this, 'ApiUrl', {
       value: `http://${service.loadBalancer.loadBalancerDnsName}`,

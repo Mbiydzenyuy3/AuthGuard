@@ -5,7 +5,7 @@ import { BaseStack } from '../lib/core/base-stack';
 
 const app = new App();
 
-new BaseStack(app, 'DevGuardBaseStack', {
+new BaseStack(app, 'AuthGuardBaseStack', {
   env: {
     region: 'eu-north-1',
   },

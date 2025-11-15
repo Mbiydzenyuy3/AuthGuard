@@ -17,18 +17,13 @@
   "scripts": {
     "build": "tsup src/index.ts --dts --format esm,cjs --clean",
     "dev": "tsup src/index.ts --watch",
-    "lint": "eslint . --ext .ts,.tsx",
+    "lint": "eslint . --ext .ts,.tsx --config eslint.config.mjs",
     "clean": "rm -rf dist"
   },
   "devDependencies": {
     "@devguard/eslint-config": "workspace:*",
     "@devguard/typescript-config": "workspace:*",
-    "@types/node": "^22.15.3",
-    "@types/react": "19.2.2",
-    "@types/react-dom": "19.2.2",
-    "eslint": "^9.39.1",
-    "tsup": "^8.5.0",
-    "typescript": "5.9.2"
+    "@types/node": "^22.15.3"
   },
   "dependencies": {
     "react": "^19.2.0",

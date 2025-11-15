@@ -1,36 +1,46 @@
 {
   "name": "devguard",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo run dev --parallel",
-    "format": "prettier --write \"**/*.{ts,tsx,md,js,json}\"",
     "prepare": "husky",
     "build:dashboard": "turbo run build --filter=dashboard",
     "build:api": "turbo run build --filter=api",
-    "lint": "turbo run lint"
+    "lint": "eslint '**/*.{ts,tsx,js,jsx}'",
+    "format": "prettier --write '**/*.{ts,tsx,js,jsx,json,md}'"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
+    "@eslint/js": "^9.39.1",
+    "@next/eslint-plugin-next": "^15.5.6",
     "@types/eslint": "^9.6.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.10.1",
     "@types/prettier": "^3.0.0",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.4",
     "aws-cdk": "2.1031.2",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-turbo": "^2.6.1",
     "husky": "^9.1.7",
     "jest": "^30.2.0",
     "lint-staged": "^16.2.6",
     "prettier": "^3.6.2",
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
+    "tsup": "8.5.1",
     "turbo": "latest",
-    "typescript": "~5.9.3"
+    "typescript": "5.9.3"
   },
   "dependencies": {
     "aws-cdk-lib": "2.224.0",
@@ -45,9 +55,16 @@
     "packages/*",
     "infra/*"
   ],
+  "ignores": [
+    "**/dist/**",
+    "**/node_modules/**",
+    "**/.next/**",
+    "**/build/**",
+    "**/infra/cdk.out/**"
+  ],
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix --max-warnings=1000",
       "prettier --write"
     ],
     "*.{json,md}": "prettier --write"

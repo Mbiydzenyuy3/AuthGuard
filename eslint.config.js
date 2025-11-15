@@ -10,10 +10,11 @@ export default [
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     ignores: [
       '**/dist/**',
-      '**/build/**',
       '**/.next/**',
       '**/node_modules/**',
+      '**/build/**',
       '**/infra/cdk.out/**',
+      '**/*.d.ts',
     ],
   },
 ];

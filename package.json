@@ -50,11 +50,7 @@
     "node": ">=18.0.0"
   },
   "packageManager": "pnpm@10.21.0",
-  "workspaces": [
-    "apps/*",
-    "packages/*",
-    "infra/*"
-  ],
+  "workspaces": ["apps/*", "packages/*", "infra/*"],
   "ignores": [
     "**/dist/**",
     "**/node_modules/**",
@@ -63,10 +59,9 @@
     "**/infra/cdk.out/**"
   ],
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "eslint --fix --max-warnings=1000",
-      "prettier --write"
-    ],
-    "*.{json,md}": "prettier --write"
+    "apps/**/src/**/*.{ts,tsx,js,jsx}": ["eslint --fix --max-warnings=1000"],
+    "packages/**/src/**/*.{ts,tsx,js,jsx}": ["eslint --fix --max-warnings=1000"],
+    "apps/**/src/**/*.{ts,tsx,js,jsx,json,md}": ["prettier --write"],
+    "packages/**/src/**/*.{ts,tsx,js,jsx,json,md}": ["prettier --write"]
   }
 }

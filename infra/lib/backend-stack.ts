@@ -26,7 +26,7 @@ export class BackendStack extends cdk.Stack {
         publicLoadBalancer: true,
         taskImageOptions: {
           image: ecs.ContainerImage.fromAsset(
-            path.join(__dirname, '../../apps/api'),
+            path.join(__dirname, '../docker-context/apps/api'),
           ),
           containerPort: 3000,
           environment: { NODE_ENV: 'production' },

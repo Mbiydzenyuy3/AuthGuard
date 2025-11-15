@@ -1,7 +1,0 @@
-cdk.out
-node_modules
-.next
-dist
-build
-apps/
-packages/

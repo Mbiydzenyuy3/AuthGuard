@@ -1,9 +1,16 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
+import { Repository } from 'typeorm';
+import { User } from './user/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
 
   @Get()
   getHello(): string {
@@ -11,7 +18,13 @@ export class AppController {
   }
 
   @Get('health')
-  getHealth(): { status: string } {
-    return { status: 'ok' };
+  async getHealth(): Promise<{ status: string; db: string }> {
+    try {
+      // Test database connection
+      await this.userRepository.query('SELECT 1');
+      return { status: 'ok', db: 'connected' };
+    } catch (error) {
+      return { status: 'error', db: error.message };
+    }
   }
 }

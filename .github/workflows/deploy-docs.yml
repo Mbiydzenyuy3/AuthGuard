@@ -1,0 +1,45 @@
+name: Deploy Docs
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: |
+          npm install
+          cd docs && npm install
+
+      - name: Generate Swagger
+        run: npm run generate:swagger
+
+      - name: Build Docs
+        run: cd docs && npm run build
+
+      - name: Deploy to S3
+        uses: aws-actions/s3-sync@v1
+        with:
+          bucket: ${{ secrets.DOCS_BUCKET }}
+          delete: true
+          source: docs/out
+
+      - name: Invalidate CloudFront
+        uses: chetan/invalidate-cloudfront@v1.6
+        env:
+          DISTRIBUTION_ID: ${{ secrets.DOCS_DISTRIBUTION_ID }}
+          PATHS: '/*'
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

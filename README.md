@@ -1,135 +1,351 @@
-# Turborepo starter
+# AuthGuard (DevGuard)
 
-This Turborepo starter is maintained by the Turborepo core team.
+A comprehensive authentication and authorization service built with modern technologies, providing secure user management, session handling, and developer SDK integration.
 
-## Using this example
+![DevGuard](https://img.shields.io/badge/authentication-service-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white) ![NestJS](https://img.shields.io/badge/NestJS-E0234E?logo=nestjs&logoColor=white) ![Next.js](https://img.shields.io/badge/Next.js-000000?logo=next.js&logoColor=white)
 
-Run the following command:
+## 🚀 Overview
 
-```sh
-npx create-turbo@latest
-```
+DevGuard is a production-ready authentication service that provides enterprise-grade security features. Built with scalability and developer experience in mind, it offers a complete solution for user authentication, session management, and API key generation - serving as an alternative to services like Clerk.
 
-## What's inside?
+### ✨ Key Features
 
-This Turborepo includes the following packages/apps:
+- **🔐 Secure Authentication**: AWS Cognito integration with JWT tokens
+- **👥 User Management**: Complete user lifecycle management
+- **🔑 API Key Management**: Developer-friendly SDK integration
+- **📊 Session Tracking**: Advanced session management and monitoring
+- **🛡️ Security First**: Multi-layered security with automatic cleanup
+- **📱 SDK Ready**: JavaScript SDK for easy integration
+- **🌐 Cloud Ready**: AWS CDK infrastructure for deployment
+- **📖 API Documentation**: Auto-generated Swagger documentation
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@devguard/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@devguard/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@devguard/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
+## 🏗️ Architecture
 
 ```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Next.js       │    │   NestJS API    │    │   PostgreSQL    │
+│   Dashboard     │◄──►│   (Port 3000)   │◄──►│   Database      │
+│   (Port 4000)   │    │                 │    │                 │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         │              ┌─────────────────┐              │
+         └──────────────┤   AWS Cognito   │──────────────┘
+                        │   User Pool     │
+                        └─────────────────┘
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+### 🛠️ Tech Stack
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+- **Backend API**: NestJS, TypeScript, TypeORM, PostgreSQL
+- **Authentication**: AWS Cognito, JWT, Refresh Tokens
+- **Frontend**: Next.js, React, TypeScript
+- **Infrastructure**: AWS CDK, Node.js 18+
+- **Development**: Monorepo(Turborepo), ESLint, Prettier, Husky
+- **Database**: PostgreSQL with TypeORM
+- **Documentation**: Swagger/OpenAPI
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+## 🚀 Quick Start
 
-### Develop
+### Prerequisites
 
-To develop all apps and packages, run the following command:
+- Node.js 18+
+- PostgreSQL database
+- AWS Account (for Cognito integration)
+- pnpm (recommended package manager)
 
-```
-cd my-turborepo
+### Clone the Repository
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+```bash
+# Clone the repository
+git clone git@github.com:Mbiydzenyuy3/AuthGuard.git
+cd authguard
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+# Install dependencies
+pnpm install or npm (your preference)
 ```
 
-### Remote Caching
+### Environment Setup
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+Create environment files for each service:
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+#### API Service (`apps/api/.env`)
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+```env example
+# Database
+DATABASE_URL=postgresql://username:password@localhost:5432/authguard
+NODE_ENV=development
 
-```
-cd my-turborepo
+# AWS Cognito
+AWS_REGION=us-east-1
+COGNITO_USER_POOL_ID=your-user-pool-id
+COGNITO_CLIENT_ID=your-client-id
+COGNITO_CLIENT_SECRET=your-client-secret
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
+# JWT
+JWT_SECRET=your-jwt-secret-key
+JWT_EXPIRES_IN=3600
+REFRESH_TOKEN_EXPIRES_IN=2592000
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+# API Configuration
+PORT=3000
+API_BASE_URL=http://localhost:3000
 ```
 
-## Useful Links
+#### Dashboard Service (`apps/dashboard/.env`)
 
-Learn more about the power of Turborepo:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3000
+NEXT_PUBLIC_API_KEY=your-public-api-key
+NODE_ENV=development
+```
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+### Database Setup
+
+```bash
+# Create PostgreSQL database
+createdb authguard
+
+# Run migrations (if any)
+cd apps/api
+pnpm run build
+pnpm run start:dev
+```
+
+### Development Scripts
+
+Start all services in development mode:
+
+```bash
+# Start all applications in parallel
+pnpm run dev
+
+# Start specific service
+pnpm turbo run dev --filter=api      # API only
+pnpm turbo run dev --filter=dashboard # Dashboard only
+pnpm turbo run dev --filter=docs     # Documentation only
+
+# Build applications
+pnpm run build
+
+# Run linting
+pnpm run lint
+
+# Format code
+pnpm run format
+```
+
+## 📖 Services Overview
+
+### 🖥️ API Service (`apps/api`)
+
+**Port: 3000**
+
+The core authentication API built with NestJS, providing:
+
+- User authentication endpoints
+- Session management
+- API key generation and management
+- Swagger documentation at `/api/docs`
+
+#### Key Endpoints:
+
+```
+POST   /auth/signup          # User registration
+POST   /auth/login           # User login
+POST   /auth/logout          # User logout
+POST   /auth/refresh         # Refresh access token
+POST   /auth/forgot-password # Password reset request
+POST   /auth/reset-password  # Password reset confirmation
+
+GET    /users/profile        # Get user profile
+PUT    /users/profile        # Update user profile
+DELETE /users/account        # Delete user account
+
+GET    /api-keys             # List user API keys
+POST   /api-keys             # Generate new API key
+DELETE /api-keys/:id         # Revoke API key
+
+GET    /sessions             # List user sessions
+DELETE /sessions/:id         # Revoke specific session
+DELETE /sessions             # Revoke all sessions
+```
+
+### 🖼️ Dashboard (`apps/dashboard`)
+
+**Port: 4000**
+
+Modern Next.js admin dashboard for managing:
+
+- User accounts and profiles
+- Session monitoring and management
+- API key generation and oversight
+- Authentication analytics
+
+### 📚 Documentation (`apps/docs`)
+
+**Port: 3001**
+
+Comprehensive developer documentation including:
+
+- API reference
+- Integration guides
+- SDK documentation
+- Best practices
+
+## 🛡️ Authentication Flow
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant API
+    participant Cognito
+    participant Database
+
+    Client->>API: POST /auth/login
+    API->>Cognito: Validate credentials
+    Cognito-->>API: Authentication tokens
+    API->>Database: Store session
+    API-->>Client: Access + Refresh tokens
+
+    Client->>API: API request + Access token
+    API->>API: Validate JWT
+    API-->>Client: Protected resource
+
+    Note over Client,API: Refresh flow when token expires
+    Client->>API: POST /auth/refresh
+    API->>Database: Validate refresh token
+    API-->>Client: New access token
+```
+
+## 🔧 Configuration
+
+### AWS Cognito Setup
+
+1. Create a User Pool in AWS Cognito
+2. Configure app client with OAuth settings
+3. Set up custom attributes if needed
+4. Update environment variables with your pool details
+
+### API Key Management
+
+API keys are automatically generated for developers to integrate with your service:
+
+```javascript
+// SDK Integration Example
+import { AuthKeyClient } from '@devguard/sdk-js';
+
+const client = new AuthKeyClient({
+  apiUrl: 'http://localhost:3000',
+  apiKey: 'your-api-key',
+});
+
+// Make authenticated requests
+await client.users.getProfile();
+```
+
+## 🚀 Deployment
+
+### Using AWS CDK Infrastructure
+
+```bash
+# Build and deploy infrastructure
+cd infra
+pnpm run build
+pnpm run deploy
+
+# Or deploy specific services
+cd apps/api
+pnpm run build
+docker build -t authguard-api .
+docker push your-registry/authguard-api
+```
+
+### Environment Variables for Production
+
+Ensure all production environment variables are configured:
+
+- Database connection strings
+- AWS credentials and region
+- JWT secrets (use secure key management)
+- API URLs and CORS settings
+
+## 📊 Monitoring & Analytics
+
+The API provides built-in monitoring for:
+
+- Authentication success/failure rates
+- Session lifecycle tracking
+- API key usage analytics
+- Security event logging
+
+Access metrics at `/api/metrics` (when configured).
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+pnpm test
+
+# Run tests for specific app
+pnpm test --filter=api
+pnpm test --filter=dashboard
+
+# Run tests with coverage
+pnpm test:cov
+
+# Run e2e tests
+pnpm test:e2e
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our contributing guidelines:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Development Workflow
+
+```bash
+# Install husky hooks (automatic on install)
+# Code will be automatically formatted and linted on commit
+git add .
+git commit -m "Your commit message"
+```
+
+## 📝 API Documentation
+
+Once the API is running, visit:
+
+- Swagger UI: `http://localhost:3000/api/docs`
+- OpenAPI Spec: `http://localhost:3000/api/docs-json`
+
+## 🔒 Security Features
+
+- **JWT Authentication**: Secure token-based authentication
+- **Refresh Token Rotation**: Automatic token refresh with security
+- **Session Management**: Track and manage active sessions
+- **API Key Security**: Secure API key generation and validation
+- **Rate Limiting**: Built-in protection against abuse
+- **Input Validation**: Comprehensive request validation
+- **Security Headers**: CORS and security header configuration
+
+## 📞 Support
+
+- **Documentation**: Visit our docs at `/docs`
+- **Issues**: Report bugs on GitHub Issues
+- **Discussions**: Join our GitHub Discussions
+- **Email**: support@authguard.dev
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+**Built with ❤️ using modern web technologies**
+
+_AuthGuard - Secure, Scalable, Developer-Friendly Authentication_

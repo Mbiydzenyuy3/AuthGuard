@@ -8,6 +8,7 @@ import {
   ForgotPasswordCommand,
   ConfirmForgotPasswordCommand,
   ChangePasswordCommand,
+  RevokeTokenCommand,
   AuthFlowType,
 } from '@aws-sdk/client-cognito-identity-provider';
 
@@ -98,6 +99,29 @@ export class CognitoService {
     });
 
     this.logger.debug('Changing password for authenticated user');
+    return this.client.send(command);
+  }
+
+  async refreshToken(refreshToken: string) {
+    const command = new InitiateAuthCommand({
+      AuthFlow: 'REFRESH_TOKEN_AUTH' as AuthFlowType,
+      ClientId: this.clientId,
+      AuthParameters: {
+        REFRESH_TOKEN: refreshToken,
+      },
+    });
+
+    this.logger.debug('Refreshing token');
+    return this.client.send(command);
+  }
+
+  async revokeToken(refreshToken: string) {
+    const command = new RevokeTokenCommand({
+      ClientId: this.clientId,
+      Token: refreshToken,
+    });
+
+    this.logger.debug('Revoking token');
     return this.client.send(command);
   }
 }

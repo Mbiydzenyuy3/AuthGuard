@@ -50,4 +50,14 @@ export class AuthController {
       body.newPassword,
     );
   }
+
+  @Post('refresh')
+  async refresh(@Body('refreshToken') token: string) {
+    return this.authService.refresh(token);
+  }
+
+  @Post('logout')
+  async logout(@Body('refreshToken') token: string) {
+    return this.authService.logout(token);
+  }
 }

@@ -27,6 +27,9 @@ export class Session {
   @Column({ nullable: true })
   ipAddress: string;
 
+  @Column({ type: 'timestamp' })
+  expiresAt: Date;
+
   @CreateDateColumn()
   createdAt: Date;
 

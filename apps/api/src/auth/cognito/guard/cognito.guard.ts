@@ -42,13 +42,22 @@ export class CognitoGuard implements CanActivate {
     const userPoolId = this.config.get<string>('AWS_COGNITO_USER_POOL_ID');
     const region = this.config.get<string>('AWS_REGION');
 
-    if (!userPoolId || !region) {
+    const finalUserPoolId = userPoolId || 'us-east-1_m8D68se8M';
+    const finalRegion = region || 'us-east-1';
+
+    if (!finalUserPoolId || !finalRegion) {
       throw new Error(
         'AWS_COGNITO_USER_POOL_ID and AWS_REGION must be configured',
       );
     }
 
-    this.jwksUrl = `https://cognito-idp.${region}.amazonaws.com/${userPoolId}/.well-known/jwks.json`;
+    if (!userPoolId || !region) {
+      console.warn(
+        '⚠️  Using fallback AWS Cognito configuration for development. Set AWS_COGNITO_USER_POOL_ID and AWS_REGION environment variables for production.',
+      );
+    }
+
+    this.jwksUrl = `https://cognito-idp.${finalRegion}.amazonaws.com/${finalUserPoolId}/.well-known/jwks.json`;
   }
 
   private async makeHttpRequest(

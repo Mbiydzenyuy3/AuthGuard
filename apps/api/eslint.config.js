@@ -28,7 +28,7 @@ export default [
     ignores: ['dist/**', 'node_modules/**'],
   },
   {
-    files: ['**/*.spec.ts', '**/*.e2e-spec.ts'], // test files
+    files: ['**/*.spec.ts', '**/*.e2e-spec.ts', '**/test-utils.ts'],
     languageOptions: {
       parser: tsParser,
       sourceType: 'module',

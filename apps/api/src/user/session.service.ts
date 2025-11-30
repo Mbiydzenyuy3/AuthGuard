@@ -27,7 +27,6 @@ export class SessionService {
       throw new NotFoundException('User not found');
     }
 
-    // Calculate expiration time (default: 24 hours from now)
     const expiresAt = new Date();
     expiresAt.setHours(expiresAt.getHours() + expiresInHours);
 
@@ -120,12 +119,10 @@ export class SessionService {
 
     for (const session of expiredSessions) {
       try {
-        // Revoke Cognito token if service is available
         if (cognitoService) {
           try {
             await cognitoService.revokeToken(session.refreshToken);
           } catch (error) {
-            // Log but don't fail - Cognito revocation is not critical
             this.logger.warn(
               `Failed to revoke Cognito token for session ${session.id}:`,
               error,
@@ -133,7 +130,6 @@ export class SessionService {
           }
         }
 
-        // Revoke all API keys for the user if service is available
         if (apiKeyService && session.user) {
           try {
             await apiKeyService.revokeAllUserApiKeys(session.user.id);
@@ -145,7 +141,6 @@ export class SessionService {
           }
         }
 
-        // Remove the expired session
         await this.revokeSession(session.id);
         cleanedCount++;
 

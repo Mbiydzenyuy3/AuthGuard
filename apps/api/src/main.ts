@@ -19,6 +19,20 @@ async function bootstrap() {
     .setDescription('API documentation for the DevGuard Authentication Service')
     .setVersion('1.0')
     .addBearerAuth()
+    .addApiKey(
+      {
+        type: 'apiKey',
+        name: 'x-api-key',
+        in: 'header',
+        description:
+          'API key for SDK integration. Get your API key from the dashboard.',
+      },
+      'api-key',
+    )
+    .addTag('Authentication', 'User authentication and session management')
+    .addTag('API Keys', 'Developer API key management for SDK integration')
+    .addTag('Sessions', 'User session management and tracking')
+    .addTag('Users', 'User profile and account management')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

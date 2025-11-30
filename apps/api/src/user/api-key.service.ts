@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ApiKey } from './entity/api-key.entity';
 import { User } from './entity/user.entity';
-import * as crypto from 'crypto';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class ApiKeyService {
@@ -19,7 +19,9 @@ export class ApiKeyService {
   ) {}
 
   generateApiKey(): string {
-    return `ak_${crypto.randomBytes(32).toString('hex')}`;
+    // Generate a UUID-based API key for better uniqueness and security
+    const uuid = randomUUID();
+    return `ak_${uuid}`;
   }
 
   async createApiKey(userId: string, name?: string): Promise<ApiKey> {
@@ -87,7 +89,6 @@ export class ApiKeyService {
       return null;
     }
 
-    // Update last used timestamp
     await this.updateLastUsed(apiKey.id);
     return apiKey;
   }

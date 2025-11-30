@@ -91,7 +91,7 @@ export class ApiKeysController {
 
     return {
       id: apiKey.id,
-      key: `ak_${'*'.repeat(32)}`, // Masked for security
+      key: `ak_${'*'.repeat(32)}`,
       name: apiKey.name,
       createdAt: apiKey.createdAt,
       lastUsed: apiKey.lastUsed,

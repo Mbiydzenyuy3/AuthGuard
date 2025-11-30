@@ -6,10 +6,7 @@ import { UsersController } from './users.controller';
 import { User } from './entity/user.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User]),
-    ConfigModule, // Required for CognitoGuard which uses ConfigService
-  ],
+  imports: [TypeOrmModule.forFeature([User]), ConfigModule],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],

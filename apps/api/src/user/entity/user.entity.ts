@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Session } from './session.entity';
+import { ApiKey } from './api-key.entity';
 
 @Entity()
 export class User {
@@ -24,4 +26,10 @@ export class User {
   createdAt?: Date;
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   updatedAt?: Date;
+
+  @OneToMany(() => Session, (session) => session.user)
+  sessions?: Session[];
+
+  @OneToMany(() => ApiKey, (apiKey) => apiKey.user)
+  apiKeys?: ApiKey[];
 }

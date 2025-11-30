@@ -26,6 +26,7 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.0",
+    "class-validator": "^0.14.3",
     "jsonwebtoken": "^9.0.2",
     "jwk-to-pem": "^2.0.7",
     "pg": "^8.16.3",

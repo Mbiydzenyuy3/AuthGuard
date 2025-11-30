@@ -7,6 +7,7 @@ import {
   ConfirmSignUpCommand,
   ForgotPasswordCommand,
   ConfirmForgotPasswordCommand,
+  ChangePasswordCommand,
   AuthFlowType,
 } from '@aws-sdk/client-cognito-identity-provider';
 
@@ -74,11 +75,7 @@ export class CognitoService {
     return this.client.send(command);
   }
 
-  async confirmForgotPassword(
-    email: string,
-    code: string,
-    newPassword: string,
-  ) {
+  async ResetPassword(email: string, code: string, newPassword: string) {
     const command = new ConfirmForgotPasswordCommand({
       ClientId: this.clientId,
       Username: email,
@@ -86,6 +83,21 @@ export class CognitoService {
       Password: newPassword,
     });
 
+    return this.client.send(command);
+  }
+
+  async changePassword(
+    accessToken: string,
+    previousPassword: string,
+    proposedPassword: string,
+  ) {
+    const command = new ChangePasswordCommand({
+      AccessToken: accessToken,
+      PreviousPassword: previousPassword,
+      ProposedPassword: proposedPassword,
+    });
+
+    this.logger.debug('Changing password for authenticated user');
     return this.client.send(command);
   }
 }

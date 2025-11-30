@@ -40,4 +40,45 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
   }
+
+  async forgotPassword(email: string) {
+    try {
+      const resp = await this.cognito.forgotPassword(email);
+      return {
+        message: 'Password reset code sent',
+        deliveryDetails: (resp as any).CodeDeliveryDetails,
+      };
+    } catch (err: unknown) {
+      const e = err as Error;
+      throw new BadRequestException(e.message || 'Failed to send reset code');
+    }
+  }
+
+  async resetPassword(email: string, code: string, newPassword: string) {
+    try {
+      await this.cognito.ResetPassword(email, code, newPassword);
+      return { message: 'Password has been reset successfully' };
+    } catch (err: unknown) {
+      const e = err as Error;
+      throw new BadRequestException(e.message || 'Password reset failed');
+    }
+  }
+
+  async changePassword(
+    accessToken: string,
+    currentPassword: string,
+    newPassword: string,
+  ) {
+    try {
+      await this.cognito.changePassword(
+        accessToken,
+        currentPassword,
+        newPassword,
+      );
+      return { message: 'Password has been changed successfully' };
+    } catch (err: unknown) {
+      const e = err as Error;
+      throw new BadRequestException(e.message || 'Password change failed');
+    }
+  }
 }

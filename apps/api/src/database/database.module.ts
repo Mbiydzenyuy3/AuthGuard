@@ -1,4 +1,3 @@
- 
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -8,14 +7,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       useFactory: () => {
         if (process.env.NODE_ENV === 'production' && process.env.DB_SECRET) {
           try {
-             
             const dbSecret = JSON.parse(process.env.DB_SECRET);
             return {
               type: 'postgres',
-               
+
               host: process.env.DATABASE_HOST || dbSecret.host,
               port:
-                 
                 parseInt(process.env.DATABASE_PORT || dbSecret.port, 10) ||
                 5432,
               username: dbSecret.username,

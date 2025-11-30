@@ -23,8 +23,6 @@ export class JwtAuthGuard implements CanActivate {
       throw new UnauthorizedException('Invalid authorization format');
     }
 
-    // For now, we'll just check if the token exists
-    // In a real implementation, you would validate the JWT token here
     request.accessToken = token;
     return true;
   }

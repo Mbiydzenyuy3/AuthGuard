@@ -2,18 +2,26 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id?: number;
 
   @Column()
-  name: string;
+  name?: string;
 
   @Column({ unique: true })
-  email: string;
+  email?: string;
 
   @Column({ nullable: true })
-  phone: string;
+  phone?: string;
+
+  @Column({ unique: true })
+  cognitoSub: string;
+
+  @Column({ default: 'developer' })
+  role: string;
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
+  createdAt?: Date;
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  updatedAt?: Date;
 }

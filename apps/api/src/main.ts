@@ -2,21 +2,28 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { json } from 'express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: ['log', 'warn', 'error'],
   });
   app.enableShutdownHooks();
   app.use(json({ limit: '10mb' }));
+
+  app.useStaticAssets(join(__dirname, '..', 'docs'), {
+    prefix: '/api/docs/',
+  });
+
   const port = process.env.PORT ? Number(process.env.PORT) : 3000;
   await app.listen(port);
   // eslint-disable-next-line no-undef
   console.log(`API running on port ${port}`);
 
   const config = new DocumentBuilder()
-    .setTitle('DevGuard API')
-    .setDescription('API documentation for the DevGuard Authentication Service')
+    .setTitle('AuthGuard API')
+    .setDescription('Comprehensive authentication and authorization service')
     .setVersion('1.0')
     .addBearerAuth()
     .addApiKey(
@@ -37,6 +44,6 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
 
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup('api/swagger', app, document);
 }
 bootstrap();

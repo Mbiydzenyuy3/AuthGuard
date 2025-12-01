@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevGuard API Documentation</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="logo-heading">
+        <h1>
+          <!-- <span class="logo">
+            <img src="../../docs/public/devguard.png" alt="logo">
+          </span>  -->
+          DevGuard API Documentation
+        </h1>
+      </div>
+
+      <p>
+        Complete guide to integrating with DevGuard's authentication service
+      </p>
+    </div>
+  </header>
+
+  <nav class="sidebar">
+    <div class="nav-content">
+      <h3>Table of Contents</h3>
+      <ul>
+        <li><a href="#getting-started">Getting Started</a></li>
+        <li><a href="#authentication">Authentication</a></li>
+        <li><a href="#base-url">Base URL</a></li>
+        <li>
+          <a href="#endpoints">API Endpoints</a>
+          <ul class="submenu">
+            <li><a href="#auth-endpoints">Authentication</a></li>
+            <li><a href="#user-endpoints">Users</a></li>
+            <li><a href="#apikey-endpoints">API Keys</a></li>
+            <li><a href="#session-endpoints">Sessions</a></li>
+          </ul>
+        </li>
+        <li><a href="#examples">Code Examples</a></li>
+        <li><a href="#sdk">JavaScript SDK</a></li>
+        <li><a href="#webhooks">Webhooks</a></li>
+        <li><a href="#errors">Error Handling</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="container">
+      <section id="getting-started">
+        <h2>Getting Started</h2>
+        <p>
+          Welcome to DevGuard API documentation. This guide will help you
+          integrate authentication into your applications quickly and
+          securely.
+        </p>
+
+        <div class="info-box">
+          <h4>What you'll find here:</h4>
+          <ul>
+            <li>Complete API reference for all endpoints</li>
+            <li>Authentication flows and best practices</li>
+            <li>Code examples in multiple languages</li>
+            <li>SDK documentation for JavaScript</li>
+            <li>Error handling guidelines</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="base-url">
+        <h2>Base URL</h2>
+        <p>All API requests should be made to the following base URL:</p>
+        <div class="code-block">
+          <code>https://api.devguard.dev/v1</code>
+        </div>
+        <p>
+          <strong>Development:</strong> <code>http://localhost:3000/v1</code>
+        </p>
+      </section>
+
+      <section id="authentication">
+        <h2>Authentication</h2>
+        <p>
+          DevGuard uses JWT (JSON Web Tokens) for authentication. Most
+          endpoints require a valid access token in the Authorization header.
+        </p>
+
+        <h3>Getting an Access Token</h3>
+        <p>
+          To authenticate, you first need to obtain an access token by calling
+          the login endpoint:
+        </p>
+
+        <div class="endpoint-example">
+          <h4>POST /auth/login</h4>
+          <div class="code-block">
+            <pre><code class="language-json">{
+  "email": "user@example.com",
+  "password": "securepassword"
+}</code></pre>
+          </div>
+        </div>
+
+        <h3>Using the Access Token</h3>
+        <p>
+          Include the access token in the Authorization header for all
+          authenticated requests:
+        </p>
+        <div class="code-block">
+          <code>Authorization: Bearer
+              eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code>
+        </div>
+
+        <div class="warning-box">
+          <h4>Security Notice</h4>
+          <p>
+            Access tokens expire after 1 hour. Use refresh tokens to obtain
+            new access tokens without requiring user credentials.
+          </p>
+        </div>
+      </section>
+
+      <section id="endpoints">
+        <h2>API Endpoints</h2>
+
+        <div id="auth-endpoints">
+          <h3>Authentication Endpoints</h3>
+
+          <div class="endpoint">
+            <h4>POST /auth/signup</h4>
+            <p>Register a new user account</p>
+
+            <h5>Request Body:</h5>
+            <div class="code-block">
+              <pre><code class="language-json">{
+  "email": "user@example.com",
+  "password": "securepassword"
+}</code></pre>
+            </div>
+
+            <h5>Response:</h5>
+            <div class="code-block">
+              <pre><code class="language-json">{
+  "message": "User registered successfully",
+  "userConfirmed": false
+}</code></pre>
+            </div>
+          </div>
+
+          <div class="endpoint">
+            <h4>POST /auth/login</h4>
+            <p>Authenticate user and get access tokens</p>
+
+            <h5>Request Body:</h5>
+            <div class="code-block">
+              <pre><code class="language-json">{
+  "email": "user@example.com",
+  "password": "securepassword"
+}</code></pre>
+            </div>
+
+            <h5>Response:</h5>
+            <div class="code-block">
+              <pre><code class="language-json">{
+  "AccessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "RefreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "ExpiresIn": 3600,
+  "TokenType": "Bearer"
+}</code></pre>
+            </div>
+          </div>
+
+          <div class="endpoint">
+            <h4>POST /auth/refresh</h4>
+            <p>Get a new access token using refresh token</p>
+
+            <h5>Request Body:</h5>
+            <div class="code-block">
+              <pre><code class="language-json">{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}</code></pre>
+            </div>
+          </div>
+
+          <div class="endpoint">
+            <h4>POST /auth/logout</h4>
+            <p>Invalidate current session</p>
+
+            <h5>Request Body:</h5>
+            <div class="code-block">
+              <pre><code class="language-json">{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}</code></pre>
+            </div>
+          </div>
+
+          <div class="endpoint">
+            <h4>POST /auth/forgot-password</h4>
+            <p>Request password reset code</p>
+
+            <h5>Request Body:</h5>
+            <div class="code-block">
+              <pre><code class="language-json">{
+  "email": "user@example.com"
+}</code></pre>
+            </div>
+          </div>
+
+          <div class="endpoint">
+            <h4>POST /auth/reset-password</h4>
+            <p>Reset password using verification code</p>
+
+            <h5>Request Body:</h5>
+            <div class="code-block">
+              <pre><code class="language-json">{
+  "email": "user@example.com",
+  "code": "123456",
+  "newPassword": "newsecurepassword"
+}</code></pre>
+            </div>
+          </div>
+
+          <div class="endpoint">
+            <h4>POST /auth/change-password</h4>
+            <p>Change password for authenticated user</p>
+
+            <h5>Headers:</h5>
+            <div class="code-block">
+              <code>Authorization: Bearer
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code>
+            </div>
+
+            <h5>Request Body:</h5>
+            <div class="code-block">
+              <pre><code class="language-json">{
+  "currentPassword": "currentpassword",
+  "newPassword": "newsecurepassword"
+}</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div id="user-endpoints">
+          <h3>User Endpoints</h3>
+
+          <div class="endpoint">
+            <h4>GET /users/me</h4>
+            <p>Get current user profile</p>
+
+            <h5>Headers:</h5>
+            <div class="code-block">
+              <code>Authorization: Bearer
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code>
+            </div>
+
+            <h5>Response:</h5>
+            <div class="code-block">
+              <pre><code class="language-json">{
+  "id": "user-123",
+  "email": "user@example.com",
+  "name": "John Doe",
+  "emailVerified": true,
+  "createdAt": "2023-01-15T10:30:00Z",
+  "updatedAt": "2023-12-01T14:20:00Z"
+}</code></pre>
+            </div>
+          </div>
+
+          <div class="endpoint">
+            <h4>PATCH /users/:id</h4>
+            <p>Update user profile</p>
+
+            <h5>Headers:</h5>
+            <div class="code-block">
+              <code>Authorization: Bearer
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code>
+            </div>
+          </div>
+        </div>
+
+        <div id="apikey-endpoints">
+          <h3>API Key Endpoints</h3>
+
+          <div class="endpoint">
+            <h4>POST /api-keys</h4>
+            <p>Create a new API key for SDK integration</p>
+
+            <h5>Headers:</h5>
+            <div class="code-block">
+              <code>Authorization: Bearer
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code>
+            </div>
+
+            <h5>Request Body:</h5>
+            <div class="code-block">
+              <pre><code class="language-json">{
+  "name": "My Application"
+}</code></pre>
+            </div>
+
+            <h5>Response:</h5>
+            <div class="code-block">
+              <pre><code class="language-json">{
+  "id": "ak_123",
+  "key": "ak_live_1234567890abcdef",
+  "name": "My Application",
+  "createdAt": "2023-12-01T15:30:00Z"
+}</code></pre>
+            </div>
+
+            <div class="warning-box">
+              <h4>Important</h4>
+              <p>
+                Save the API key securely. You won't be able to see it again
+                once created.
+              </p>
+            </div>
+          </div>
+
+          <div class="endpoint">
+            <h4>GET /api-keys</h4>
+            <p>List all API keys</p>
+
+            <h5>Headers:</h5>
+            <div class="code-block">
+              <code>Authorization: Bearer
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code>
+            </div>
+          </div>
+
+          <div class="endpoint">
+            <h4>DELETE /api-keys/:id</h4>
+            <p>Revoke an API key</p>
+          </div>
+        </div>
+
+        <div id="session-endpoints">
+          <h3>Session Endpoints</h3>
+
+          <div class="endpoint">
+            <h4>GET /sessions</h4>
+            <p>Get all user sessions</p>
+
+            <h5>Headers:</h5>
+            <div class="code-block">
+              <code>Authorization: Bearer
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code>
+            </div>
+
+            <h5>Response:</h5>
+            <div class="code-block">
+              <pre><code class="language-json">[
+  {
+    "id": "session_123",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)...",
+    "ipAddress": "192.168.1.1",
+    "createdAt": "2023-12-01T10:00:00Z",
+    "updatedAt": "2023-12-01T15:30:00Z"
+  }
+]</code></pre>
+            </div>
+          </div>
+
+          <div class="endpoint">
+            <h4>DELETE /sessions/:id</h4>
+            <p>Revoke a specific session</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="examples">
+        <h2>Code Examples</h2>
+
+        <h3>JavaScript / Node.js</h3>
+        <div class="code-block">
+          <pre><code class="language-javascript">// Login and get tokens
+const response = await fetch('http://localhost:3000/auth/login', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    email: 'user@example.com',
+    password: 'password123'
+  })
+});
+
+const tokens = await response.json();
+console.log('Access Token:', tokens.AccessToken);
+
+// Use token for authenticated request
+const profileResponse = await fetch('http://localhost:3000/users/me', {
+  headers: {
+    'Authorization': `Bearer ${tokens.AccessToken}`
+  }
+});
+
+const profile = await profileResponse.json();
+console.log('User Profile:', profile);</code></pre>
+        </div>
+
+        <h3>cURL</h3>
+        <div class="code-block">
+          <pre><code class="language-bash"># Login
+curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user@example.com", "password": "password123"}'
+
+# Get user profile (replace TOKEN with actual access token)
+curl -X GET http://localhost:3000/users/me \
+  -H "Authorization: Bearer TOKEN"</code></pre>
+        </div>
+      </section>
+      <section id="sdk">
+        <h2>JavaScript SDK</h2>
+        <p>DevGuard provides a JavaScript SDK for easy integration:</p>
+
+        <div class="code-block">
+          <pre><code class="language-bash">npm install @devguard/sdk-js</code></pre>
+        </div>
+
+        <div class="code-block">
+          <pre><code class="language-javascript">import { AuthKeyClient } from '@devguard/sdk-js';
+
+const client = new AuthKeyClient({
+  apiUrl: 'http://localhost:3000',
+  apiKey: 'your-api-key'
+});
+
+// Login user
+const user = await client.auth.login({
+  email: 'user@example.com',
+  password: 'password123'
+});
+
+// Get user profile
+const profile = await client.users.getProfile();
+
+// Logout
+await client.auth.logout();</code></pre>
+        </div>
+      </section>
+
+      <section id="webhooks">
+        <h2>Webhooks</h2>
+        <p>
+          DevGuard can send webhooks to notify your application of important
+          events:
+        </p>
+
+        <h3>Available Events</h3>
+        <ul>
+          <li><code>user.created</code> - New user registration</li>
+          <li><code>user.login</code> - Successful user login</li>
+          <li><code>user.logout</code> - User logout</li>
+          <li><code>session.revoked</code> - Session revoked</li>
+          <li><code>password.changed</code> - Password changed</li>
+        </ul>
+
+        <h3>Webhook Payload Example</h3>
+        <div class="code-block">
+          <pre><code class="language-json">{
+  "event": "user.login",
+  "timestamp": "2023-12-01T15:30:00Z",
+  "data": {
+    "userId": "user_123",
+    "email": "user@example.com",
+    "sessionId": "session_456",
+    "ipAddress": "192.168.1.1",
+    "userAgent": "Mozilla/5.0..."
+  }
+}</code></pre>
+        </div>
+      </section>
+
+      <section id="errors">
+        <h2>Error Handling</h2>
+        <p>
+          DevGuard uses standard HTTP status codes and returns detailed error
+          information:
+        </p>
+
+        <h3>Common Error Responses</h3>
+
+        <div class="endpoint">
+          <h4>400 Bad Request</h4>
+          <div class="code-block">
+            <pre><code class="language-json">{
+  "statusCode": 400,
+  "message": "Invalid input data",
+  "error": "Bad Request"
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="endpoint">
+          <h4>401 Unauthorized</h4>
+          <div class="code-block">
+            <pre><code class="language-json">{
+  "statusCode": 401,
+  "message": "Invalid or expired token",
+  "error": "Unauthorized"
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="endpoint">
+          <h4>404 Not Found</h4>
+          <div class="code-block">
+            <pre><code class="language-json">{
+  "statusCode": 404,
+  "message": "Resource not found",
+  "error": "Not Found"
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="endpoint">
+          <h4>429 Too Many Requests</h4>
+          <div class="code-block">
+            <pre><code class="language-json">{
+  "statusCode": 429,
+  "message": "Rate limit exceeded",
+  "error": "Too Many Requests"
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="success-box">
+          <h4>Best Practices</h4>
+          <ul>
+            <li>
+              Always check HTTP status codes before processing responses
+            </li>
+            <li>Handle 401 errors by attempting token refresh</li>
+            <li>Implement exponential backoff for 429 errors</li>
+            <li>
+              Log error details for debugging (but never log sensitive data)
+            </li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script src="./script.js"></script>
+</body>
+
+</html>

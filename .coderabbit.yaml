@@ -2,13 +2,41 @@ version: 1
 enable_reviews: true
 add_review_summary: true
 review_draft_prs: false
-language: "en"
+language: 'en'
+
+branches:
+  - '**'
 ignored_paths:
-  - "dist/**"
-  - "node_modules/**"
-  - "package-lock.json"
+  - 'dist/**'
+  - 'node_modules/**'
+  - 'package-lock.json'
+  - 'pnpm-lock.yaml'
+  - 'cdk.out/**'
+  - '.git/**'
+  - '.next/**'
+  - 'infra/cdk.out/**'
+repository:
+  type: 'multi'
+
+file_types:
+  include:
+    - '**/*.ts'
+    - '**/*.tsx'
+    - '**/*.js'
+    - '**/*.jsx'
+    - '**/*.json'
+    - '**/*.yaml'
+    - '**/*.yml'
+  exclude:
+    - '**/*.config.js'
+    - '**/*.config.ts'
+
 review_guidelines:
-  - "Focus on potential bugs, security vulnerabilities, and performance bottlenecks."
-  - "Ensure all new public functions in the SDK are documented with JSDoc."
-  - "Check for consistency with our NestJS and React best practices."
-  - "Ensure environment variables are not hard-coded."
+  - 'Focus on potential bugs, security vulnerabilities, and performance bottlenecks.'
+  - 'Ensure all new public functions in the SDK are documented with JSDoc.'
+  - 'Check for consistency with our NestJS and React best practices.'
+  - 'Ensure environment variables are not hard-coded.'
+  - 'Pay attention to package.json changes that might affect other apps.'
+  - 'Review changes in the context of the monorepo structure.'
+  - 'Check for proper TypeScript types and interfaces.'
+  - 'Ensure proper error handling and validation.'

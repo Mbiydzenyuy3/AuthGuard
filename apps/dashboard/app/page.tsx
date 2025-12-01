@@ -13,7 +13,7 @@ export default function LandingPage() {
         </h1>
 
         <p className="mt-6 text-lg text-gray-600 max-w-2xl mx-auto">
-          Add Sign-Up, Sign-In, Forgot Password, and User Management in minutes — powered by an
+          Add Sign-Up, Sign-In, Forgot Password, and User Management in minutes,powered by an
           API-first authentication system.
         </p>
 
@@ -43,9 +43,7 @@ export default function LandingPage() {
         <div className="grid md:grid-cols-3 gap-10 mt-16">
           <div className="p-6 border rounded-xl bg-white border-gray-200">
             <h3 className="font-semibold text-lg text-gray-900">Secure Sign-In</h3>
-            <p className="text-gray-600 mt-2">
-              Email, password, Google OAuth, and more — ready out of the box.
-            </p>
+            <p className="text-gray-600 mt-2">Email, password, and more ready out of the box.</p>
           </div>
 
           <div className="p-6 border rounded-xl bg-white border-gray-200">

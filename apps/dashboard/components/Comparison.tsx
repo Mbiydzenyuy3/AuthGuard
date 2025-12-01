@@ -32,16 +32,6 @@ const platforms = [
       { text: 'Basic user management only', available: false },
     ],
   },
-  {
-    name: 'Supabase Auth',
-    features: [
-      { text: 'Open source', available: true },
-      { text: 'Vendor lock-in', available: false },
-      { text: 'Requires Supabase backend', available: false },
-      { text: 'Limited UI components', available: false },
-      { text: 'Manual configuration needed', available: false },
-    ],
-  },
 ];
 
 const Comparison = () => {
@@ -56,7 +46,6 @@ const Comparison = () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {/* DevGuard - Featured */}
           <Card className="p-8 border-2 border-primary bg-card relative overflow-hidden lg:col-span-3">
             <div className="absolute top-4 right-4">
               <span className="px-3 py-1 rounded-full bg-accent text-accent-foreground text-xs font-bold">
@@ -87,7 +76,6 @@ const Comparison = () => {
             </div>
           </Card>
 
-          {/* Comparison Cards */}
           {platforms.map((platform, idx) => (
             <Card key={idx} className="p-6 border-border bg-card">
               <h3 className="text-xl font-bold text-muted-foreground mb-4">{platform.name}</h3>
@@ -112,13 +100,6 @@ const Comparison = () => {
               </div>
             </Card>
           ))}
-        </div>
-
-        <div className="p-6 rounded-lg bg-primary/5 border border-primary/20">
-          <p className="text-center text-foreground">
-            <span className="font-semibold">Migrating from another platform?</span> DevGuard
-            provides migration guides and tools to help you transfer users and settings seamlessly.
-          </p>
         </div>
       </div>
     </section>

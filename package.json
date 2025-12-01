@@ -9,7 +9,9 @@
     "build:dashboard": "turbo run build --filter=dashboard",
     "build:api": "turbo run build --filter=api",
     "lint": "eslint '**/*.{ts,tsx,js,jsx}'",
-    "format": "prettier --write '**/*.{ts,tsx,js,jsx,json,md}'"
+    "format": "prettier --write '**/*.{ts,tsx,js,jsx,json,md}'",
+    "install:deps": "pnpm install",
+    "install:dashboard": "cd apps/dashboard && pnpm install"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.1.0",
@@ -20,8 +22,8 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^24.10.1",
     "@types/prettier": "^3.0.0",
-    "@types/react": "19.2.2",
-    "@types/react-dom": "19.2.2",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.4",
     "aws-cdk": "2.1031.2",

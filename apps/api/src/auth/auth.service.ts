@@ -99,10 +99,8 @@ export class AuthService {
         throw new UnauthorizedException('Invalid refresh token');
       }
 
-      // Check if session is expired
       const isExpired = await this.sessionService.isSessionExpired(session.id);
       if (isExpired) {
-        // Clean up expired session with full revocation
         await this.sessionService.cleanExpiredSessions(
           this.cognito,
           this.apiKeyService,
@@ -114,7 +112,6 @@ export class AuthService {
 
       const resp = await this.cognito.refreshToken(refreshToken);
 
-      // Update session with new refresh token and extend expiration
       session.refreshToken = (resp as any).RefreshToken;
       await this.sessionService.updateSessionActivity(session.id);
 
@@ -122,19 +119,15 @@ export class AuthService {
     } catch (err: unknown) {
       const e = err as Error;
 
-      // Only cleanup if it's not already an expiration error
       if (!e.message?.includes('Session has expired') && refreshToken) {
         try {
           await this.sessionService.revokeSessionByToken(refreshToken);
-          // Also revoke all API keys for this user to prevent impersonation
           const session =
             await this.sessionService.getSessionByRefreshToken(refreshToken);
           if (session?.user?.id) {
             await this.apiKeyService.revokeAllUserApiKeys(session.user.id);
           }
-        } catch (_sessionErr) {
-          // Ignore session cleanup errors
-        }
+        } catch (_sessionErr) {}
       }
 
       throw new UnauthorizedException(e.message || 'Token refresh failed');
@@ -147,9 +140,7 @@ export class AuthService {
 
       try {
         await this.cognito.revokeToken(refreshToken);
-      } catch (_cognitoErr) {
-        // Silent ignore as this is not critical
-      }
+      } catch (_cognitoErr) {}
 
       return { message: 'Logged out successfully' };
     } catch (err: unknown) {
@@ -158,7 +149,6 @@ export class AuthService {
     }
   }
 
-  // Automatically clean up expired sessions
   async cleanupExpiredSessions(): Promise<{ cleaned: number }> {
     return this.sessionService.cleanExpiredSessions(
       this.cognito,
@@ -166,13 +156,10 @@ export class AuthService {
     );
   }
 
-  // Force logout user with full cleanup
   async forceLogoutUser(userId: string): Promise<void> {
     try {
-      // Revoke all user sessions
       await this.sessionService.revokeAllUserSessions(userId);
 
-      // Revoke all API keys
       await this.apiKeyService.revokeAllUserApiKeys(userId);
 
       this.logger.log(`Forced logout completed for user ${userId}`);

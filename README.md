@@ -1,4 +1,4 @@
-# AuthGuard (DevGuard)
+# DevGuard
 
 A comprehensive authentication and authorization service built with modern technologies, providing secure user management, session handling, and developer SDK integration.
 
@@ -145,7 +145,8 @@ The core authentication API built with NestJS, providing:
 - User authentication endpoints
 - Session management
 - API key generation and management
-- Swagger documentation at `/api/docs`
+- Static documentation at `/api/docs/`
+- Interactive Swagger UI at `/api/swagger`
 
 #### Key Endpoints:
 
@@ -191,6 +192,50 @@ Comprehensive developer documentation including:
 - Integration guides
 - SDK documentation
 - Best practices
+
+### 🔗 API Documentation Access
+
+There are multiple ways to access API documentation:
+
+1. **📚 Static API Documentation**: Comprehensive written guides
+   - **URL**: `http://localhost:3000/api/docs/`
+   - **Complete API reference with examples**
+   - **Code snippets in multiple languages**
+   - **Authentication guides and best practices**
+   - **SDK documentation and integration guides**
+
+2. **🔧 Interactive Swagger UI**: For testing and exploration
+   - **URL**: `http://localhost:3000/api/swagger`
+   - **Test API endpoints directly in browser**
+   - **Auto-generated request/response schemas**
+   - **Authentication testing interface**
+
+3. **Developer Documentation Site**: Next.js documentation app
+   - **URL**: `http://localhost:3001`
+   - Comprehensive guides and tutorials
+
+### 🧪 Testing Your API Documentation
+
+```bash
+# Start the API service
+cd apps/api
+pnpm run start:dev
+
+# Access different documentation:
+# 1. Static documentation (comprehensive guides)
+open http://localhost:3000/api/docs/
+
+# 2. Interactive Swagger UI (API testing)
+open http://localhost:3000/api/swagger
+
+# 3. Developer documentation site
+open http://localhost:3001
+
+# You should see:
+# - Static docs: Complete API reference with examples
+# - Swagger UI: Interactive API testing interface
+# - All endpoints organized by tags and categories
+```
 
 ## 🛡️ Authentication Flow
 
@@ -318,10 +363,42 @@ git commit -m "Your commit message"
 
 ## 📝 API Documentation
 
-Once the API is running, visit:
+Your AuthGuard API comes with comprehensive documentation:
 
-- Swagger UI: `http://localhost:3000/api/docs`
-- OpenAPI Spec: `http://localhost:3000/api/docs-json`
+### 📚 Static API Documentation (Recommended for Learning)
+
+Complete written guides and reference:
+
+- **Main Documentation**: `http://localhost:3000/api/docs/`
+  - ✨ **Complete API reference with detailed examples**
+  - 💻 **Code snippets in JavaScript, Python, cURL**
+  - 🔐 **Authentication flows and security best practices**
+  - 📦 **SDK documentation and integration guides**
+  - 🚀 **Step-by-step tutorials for common use cases**
+
+### 🔧 Interactive Swagger UI (For Testing)
+
+Test and explore the API:
+
+- **Interactive Swagger UI**: `http://localhost:3000/api/swagger`
+  - 🧪 **Test endpoints directly in your browser**
+  - 📋 **Auto-generated request/response schemas**
+  - 🔐 **Built-in authentication testing**
+  - 🏷️ **Organized by endpoint categories**
+  - 🚀 **Click "Try it out" for instant testing**
+
+- **OpenAPI JSON Spec**: `http://localhost:3000/api/swagger-json`
+  - Raw OpenAPI 3.0 specification
+  - Import into Postman, Insomnia, or other tools
+
+### 📖 Developer Documentation Site
+
+Additional resources and tutorials:
+
+- **Documentation App**: `http://localhost:3001`
+  - Architecture explanations
+  - Advanced integration patterns
+  - Troubleshooting guides
 
 ## 🔒 Security Features
 
@@ -335,10 +412,12 @@ Once the API is running, visit:
 
 ## 📞 Support
 
-- **Documentation**: Visit our docs at `/docs`
-- **Issues**: Report bugs on GitHub Issues
-- **Discussions**: Join our GitHub Discussions
-- **Email**: support@authguard.dev
+- **📚 API Documentation**: Visit comprehensive docs at `http://localhost:3000/api/docs/`
+- **🔧 Interactive Testing**: Use Swagger UI at `http://localhost:3000/api/swagger`
+- **📖 Developer Guides**: Check documentation site at `http://localhost:3001`
+- **🐛 Issues**: Report bugs on GitHub Issues
+- **💬 Discussions**: Join our GitHub Discussions
+- **📧 Email**: support@authguard.dev
 
 ## 📄 License
 

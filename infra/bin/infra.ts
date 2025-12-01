@@ -7,6 +7,8 @@ import { DatabaseStack } from '../lib/database-stack';
 import { AuthStack } from '../lib/auth-stack';
 import { ComputeStack } from '../lib/compute-stack';
 import { FrontendStack } from '../lib/frontend-stack';
+import path from 'path';
+import { DocumentationStack } from '../lib/documentation-stack-s3';
 
 const app = new cdk.App();
 // eslint-disable-next-line turbo/no-undeclared-env-vars
@@ -36,3 +38,10 @@ const compute = new ComputeStack(app, 'DevGuard-Compute', {
 });
 
 new FrontendStack(app, 'DevGuard-Dashboard', { env });
+
+new DocumentationStack(app, 'DevGuard-Docs', {
+  env,
+  docsRootPath: path.resolve(__dirname, '../../apps/docs/out'),
+  vpc: network.vpc,
+  enableCloudFront: false,
+});

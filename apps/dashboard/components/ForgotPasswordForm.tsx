@@ -1,15 +1,40 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowLeft, Mail, CheckCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft, Mail, CheckCircle, AlertCircle } from 'lucide-react';
+import { forgotPassword } from '@/lib/api';
 
 export default function ForgotPasswordForm() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
+
+    if (!email.trim()) {
+      setError('Email address is required');
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+
+    try {
+      await forgotPassword({
+        email: email.trim(),
+      });
+
+      setIsSubmitted(true);
+    } catch (err: any) {
+      const errorMessage = err?.message || 'Failed to send reset code. Please try again.';
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isSubmitted) {
@@ -27,8 +52,15 @@ export default function ForgotPasswordForm() {
 
           <div className="space-y-4">
             <button
-              onClick={() => setIsSubmitted(false)}
+              onClick={() => router.push(`/reset-password?email=${encodeURIComponent(email)}`)}
               className="w-full bg-green-700 text-white py-2 rounded-lg hover:bg-green-800 transition"
+            >
+              Reset Password
+            </button>
+
+            <button
+              onClick={() => setIsSubmitted(false)}
+              className="w-full bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300 transition"
             >
               Send Another Email
             </button>
@@ -69,23 +101,42 @@ export default function ForgotPasswordForm() {
         </div>
 
         <form onSubmit={handleSubmit}>
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center">
+              <AlertCircle className="w-5 h-5 text-red-500 mr-2 flex-shrink-0" />
+              <p className="text-red-700 text-sm">{error}</p>
+            </div>
+          )}
+
           <div className="mb-6">
             <label className="block text-gray-700 mb-2">Email Address</label>
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setError(''); // Clear error when user types
+              }}
               placeholder="you@example.com"
+              disabled={isLoading}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-green-600 text-gray-600"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-green-600 text-gray-600 disabled:bg-gray-100"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-green-700 text-white py-2 rounded-lg hover:bg-green-800 transition mb-4"
+            disabled={isLoading}
+            className="w-full bg-green-700 text-white py-2 rounded-lg hover:bg-green-800 transition disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center mb-4"
           >
-            Send Reset Link
+            {isLoading ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                Sending Reset Link...
+              </>
+            ) : (
+              'Send Reset Link'
+            )}
           </button>
         </form>
 

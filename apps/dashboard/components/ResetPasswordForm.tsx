@@ -1,15 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Eye, EyeOff, Mail, AlertCircle, CheckCircle } from 'lucide-react';
-import { signUp } from '@/lib/api';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Eye, EyeOff, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react';
+import { resetPassword } from '@/lib/api';
 
-export default function SignupForm() {
+export default function ResetPasswordForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    code: '',
+    newPassword: '',
     confirmPassword: '',
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -17,7 +18,8 @@ export default function SignupForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
+
+  const email = searchParams.get('email') || '';
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -28,23 +30,18 @@ export default function SignupForm() {
   };
 
   const validateForm = () => {
-    if (!formData.email || !formData.password || !formData.confirmPassword) {
+    if (!formData.code || !formData.newPassword || !formData.confirmPassword) {
       setError('All fields are required');
       return false;
     }
 
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.newPassword !== formData.confirmPassword) {
       setError('Passwords do not match');
       return false;
     }
 
-    if (formData.password.length < 8) {
+    if (formData.newPassword.length < 8) {
       setError('Password must be at least 8 characters long');
-      return false;
-    }
-
-    if (!agreeToTerms) {
-      setError('Please agree to the Terms of Service and Privacy Policy');
       return false;
     }
 
@@ -62,21 +59,22 @@ export default function SignupForm() {
     setError('');
 
     try {
-      const response = (await signUp({
-        email: formData.email,
-        password: formData.password,
-      })) as { message: string; userConfirmed: boolean };
+      await resetPassword({
+        email,
+        code: formData.code.trim(),
+        newPassword: formData.newPassword,
+      });
 
-      if (response.userConfirmed) {
-        // If user is immediately confirmed, redirect to signin
-        router.push('/signin?message=Account created successfully. Please sign in.');
-      } else {
-        // If confirmation required, redirect to confirmation page
-        setSuccess(true);
-        router.push(`/confirm-signup?email=${encodeURIComponent(formData.email)}`);
-      }
+      setSuccess(true);
+      // Redirect to signin after 3 seconds
+      setTimeout(() => {
+        router.push(
+          '/signin?message=Password reset successfully. Please sign in with your new password.',
+        );
+      }, 3000);
     } catch (err: any) {
-      const errorMessage = err?.message || 'Failed to create account. Please try again.';
+      const errorMessage =
+        err?.message || 'Failed to reset password. Please check your code and try again.';
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -88,18 +86,16 @@ export default function SignupForm() {
       <div className="min-h-60 flex items-center justify-center bg-gray-50 px-4">
         <div className="w-full max-w-md bg-white rounded-xl p-8 border border-gray-200 shadow-sm text-center">
           <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Check Your Email</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Password Reset Successful!</h2>
           <p className="text-gray-600 mb-6">
-            We've sent a verification code to <strong>{formData.email}</strong>. Please check your
-            email and enter the code to confirm your account.
+            Your password has been successfully reset. You'll be redirected to the sign-in page
+            shortly.
           </p>
           <button
-            onClick={() =>
-              router.push(`/confirm-signup?email=${encodeURIComponent(formData.email)}`)
-            }
+            onClick={() => router.push('/signin')}
             className="w-full bg-green-700 text-white py-2 rounded-lg hover:bg-green-800 transition"
           >
-            Enter Verification Code
+            Continue to Sign In
           </button>
         </div>
       </div>
@@ -109,10 +105,13 @@ export default function SignupForm() {
   return (
     <div className="min-h-60 flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md bg-white rounded-xl p-8 border border-gray-200 shadow-sm">
-        <h2 className="text-2xl font-semibold text-center text-gray-900 mb-1">Create Account</h2>
-        <p className="text-center text-gray-600 mb-6">
-          Join DevGuard in building secure authentication
-        </p>
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-1">Reset Your Password</h2>
+          <p className="text-gray-600">
+            Enter the verification code sent to <br />
+            <span className="font-medium text-gray-900">{email}</span>
+          </p>
+        </div>
 
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center">
@@ -123,26 +122,27 @@ export default function SignupForm() {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-1">Email Address</label>
+            <label className="block text-gray-700 mb-1">Verification Code</label>
             <input
-              type="email"
-              name="email"
-              value={formData.email}
+              type="text"
+              name="code"
+              value={formData.code}
               onChange={handleChange}
-              placeholder="you@example.com"
+              placeholder="Enter 6-digit code"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-green-600 text-gray-600"
               disabled={isLoading}
+              maxLength={6}
               required
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 mb-1">Password</label>
+            <label className="block text-gray-700 mb-1">New Password</label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
-                name="password"
-                value={formData.password}
+                name="newPassword"
+                value={formData.newPassword}
                 onChange={handleChange}
                 placeholder="Enter a strong password"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-green-600 text-gray-600"
@@ -161,15 +161,15 @@ export default function SignupForm() {
             </div>
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-1">Confirm Password</label>
+          <div className="mb-6">
+            <label className="block text-gray-700 mb-1">Confirm New Password</label>
             <div className="relative">
               <input
                 type={showConfirm ? 'text' : 'password'}
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                placeholder="Confirm your password"
+                placeholder="Confirm your new password"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-green-600 text-gray-600"
                 disabled={isLoading}
                 required
@@ -177,7 +177,7 @@ export default function SignupForm() {
               <button
                 type="button"
                 onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-3 top-2 text-gray-500"
+                className="absolute right-3 top-2 text-gray-700"
                 disabled={isLoading}
               >
                 {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -185,49 +185,48 @@ export default function SignupForm() {
             </div>
           </div>
 
-          <div className="flex items-start mb-6">
-            <input
-              type="checkbox"
-              className="mt-1 mr-2"
-              checked={agreeToTerms}
-              onChange={(e) => setAgreeToTerms(e.target.checked)}
-              disabled={isLoading}
-              required
-            />
-            <p className="text-sm text-gray-700">
-              I agree to the{' '}
-              <a href="#" className="text-green-700 underline cursor-pointer hover:text-green-800">
-                Terms of Service
-              </a>{' '}
-              and{' '}
-              <a href="#" className="text-green-700 underline cursor-pointer hover:text-green-800">
-                Privacy Policy
-              </a>
-            </p>
-          </div>
-
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-green-700 text-white py-2 rounded-lg hover:bg-green-800 transition disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-full bg-green-700 text-white py-2 rounded-lg hover:bg-green-800 transition disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center mb-4"
           >
             {isLoading ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Creating Account...
+                Resetting Password...
               </>
             ) : (
-              'Create Account'
+              'Reset Password'
             )}
           </button>
         </form>
 
-        <p className="text-center text-gray-700 mt-4">
-          Already have an account?{' '}
-          <a href="/signin" className="text-green-700 font-medium underline hover:text-green-800">
-            Sign In
+        <div className="text-center space-y-3">
+          <a
+            href="/forgot-password"
+            className="flex items-center justify-center text-sm text-green-700 hover:text-green-800 transition"
+          >
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            Back to Forgot Password
           </a>
-        </p>
+
+          <p className="text-sm text-gray-600">
+            Remember your password?{' '}
+            <a href="/signin" className="text-green-700 font-medium underline hover:text-green-800">
+              Sign In
+            </a>
+          </p>
+        </div>
+
+        <div className="mt-6 pt-6 border-t border-gray-200 text-center">
+          <p className="text-xs text-gray-500 mb-2">Don't have an account yet?</p>
+          <a
+            href="/signup"
+            className="text-sm text-green-700 font-medium underline hover:text-green-800"
+          >
+            Create Account
+          </a>
+        </div>
       </div>
     </div>
   );

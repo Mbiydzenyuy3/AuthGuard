@@ -2,19 +2,22 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { json } from 'express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: ['log', 'warn', 'error'],
   });
+
+  app.enableCors({
+    origin: ['http://localhost:3001', 'http://localhost:3002'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key'],
+  });
+
   app.enableShutdownHooks();
   app.use(json({ limit: '10mb' }));
-
-  app.useStaticAssets(join(__dirname, '..', 'docs'), {
-    prefix: '/api/docs/',
-  });
 
   const port = process.env.PORT ? Number(process.env.PORT) : 3000;
   await app.listen(port);

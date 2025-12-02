@@ -127,7 +127,9 @@ export class AuthService {
           if (session?.user?.id) {
             await this.apiKeyService.revokeAllUserApiKeys(session.user.id);
           }
-        } catch (_sessionErr) {}
+        } catch (_sessionErr) {
+          // This errors that occur during session revocation
+        }
       }
 
       throw new UnauthorizedException(e.message || 'Token refresh failed');
@@ -140,7 +142,9 @@ export class AuthService {
 
       try {
         await this.cognito.revokeToken(refreshToken);
-      } catch (_cognitoErr) {}
+      } catch (_cognitoErr) {
+        // Cognito revoke errors
+      }
 
       return { message: 'Logged out successfully' };
     } catch (err: unknown) {

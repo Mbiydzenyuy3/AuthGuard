@@ -1,0 +1,15 @@
+FROM node:20-alpine AS base
+WORKDIR /app
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+COPY apps/api ./apps/api
+
+RUN npm install -g pnpm
+
+RUN pnpm install --filter "./apps/api..."
+
+WORKDIR /app/apps/api
+RUN pnpm build
+
+CMD ["node", "dist/main.js"]

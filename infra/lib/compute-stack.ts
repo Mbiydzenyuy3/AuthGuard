@@ -1,9 +1,7 @@
-/* eslint-disable no-undef */
 import * as cdk from 'aws-cdk-lib';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
-import * as path from 'path';
 import { Construct } from 'constructs';
 import * as rds from 'aws-cdk-lib/aws-rds';
 import * as logs from 'aws-cdk-lib/aws-logs';
@@ -46,8 +44,6 @@ export class ComputeStack extends cdk.Stack {
     } = props;
 
     const cluster = new ecs.Cluster(this, 'DevGuardCluster', { vpc });
-
-    const rootAssetPath = path.join(__dirname, '..', '..');
 
     const ecsSecurityGroup = new ec2.SecurityGroup(this, 'DevGuardECSSecurityGroup', {
       vpc,
@@ -95,11 +91,9 @@ export class ComputeStack extends cdk.Stack {
 
     // eslint-disable-next-line no-unused-vars
     const container = taskDefinition.addContainer('ApiContainer', {
-      image: ecs.ContainerImage.fromAsset(rootAssetPath, {
-        file: 'Dockerfile',
-        ignoreMode: cdk.IgnoreMode.DOCKER,
-        exclude: ['**/node_modules', '**/cdk.out', 'infra/cdk.out', '.git', '.turbo'],
-      }),
+      image: ecs.ContainerImage.fromRegistry(
+        '738095763532.dkr.ecr.us-east-1.amazonaws.com/devguard-api:latest',
+      ),
       logging: ecs.LogDrivers.awsLogs({
         streamPrefix: 'api',
         logRetention: logs.RetentionDays.ONE_WEEK,

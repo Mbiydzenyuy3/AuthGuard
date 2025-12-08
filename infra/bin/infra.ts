@@ -25,7 +25,7 @@ const database = new DatabaseStack(app, 'DevGuard-Database', {
 const auth = new AuthStack(app, 'DevGuard-Auth', { env });
 
 // eslint-disable-next-line no-unused-vars
-const compute = new ComputeStack(app, 'DevGuard-Compute', {
+const compute = new ComputeStack(app, 'DevGuard-Compute-v2', {
   env,
   vpc: network.vpc,
   dbInstance: database.dbInstance,
